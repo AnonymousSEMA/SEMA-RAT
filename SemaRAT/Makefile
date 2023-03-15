@@ -23,6 +23,7 @@ build-web-sema-pypy:
 	docker build  --rm -t sema-web -f Dockerfile.sema.webapp --build-arg image=sema .
 
 build-web-sema:
+	cp -r ../.git .git
 	docker build  --rm -t sema-init -f Dockerfile.sema .
 	#docker build  --rm  -t sema-pypy -f Dockerfile.sema.pypy .
 	#docker build  --rm -t sema -f Dockerfile.sema.cuda --build-arg image=sema-pypy . # -pypy-cuda
