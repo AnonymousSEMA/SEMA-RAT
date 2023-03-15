@@ -82,7 +82,7 @@ WORKDIR /app/
 
 ADD src /app/src
 ADD setup.py /app/
-ADD ../.git/ /app/.git/
+ADD .git/ /app/.git/
 ADD .gitmodules /app/.gitmodules
 RUN git submodule update --init --recursive
 RUN git submodule update --recursive
