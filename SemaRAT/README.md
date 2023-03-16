@@ -237,8 +237,7 @@ pypy3 SemaSCDG.py BINARY_NAME
 
 python3 SemaSCDG.py BINARY_NAME
 
-usage: update_readme_usage.py
-                              [--DFS | --BFS | --CDFS | --ThreadCDFS | --CBFS | --DBFS | --SDFS | --SCDFS]
+usage: update_readme_usage.py [--DFS | --BFS | --CDFS | --CBFS | --SCDFS]
                               [--gs | --json] [--symbion | --unipacker]
                               [--packed] [--concrete_target_is_local]
                               [--symb_loop SYMB_LOOP]
@@ -264,14 +263,12 @@ SCDG module arguments
 
 optional arguments:
   help                  show this help message and exit
-  --DFS                 TODO
-  --BFS                 TODO
-  --CDFS                TODO
-  --ThreadCDFS          TODO
-  --CBFS                TODO
-  --DBFS                TODO
-  --SDFS                TODO
-  --SCDFS               TODO
+  --DFS                 Depth First Search
+  --BFS                 Breadth First Search
+  --CDFS                Custom Depth First Search (prioritize new addresses)
+  --CBFS                Custom Breadth First Search (prioritize new addresses)
+  --SCDFS               Special Custom Depth First Search (prioritize new
+                        addresses)
   --gs                  .GS format
   --json                .JSON format
   --symbion             Concolic unpacking method (linux | windows [in
@@ -291,8 +288,8 @@ SCDG exploration techniques parameters:
   --limit_pause LIMIT_PAUSE
                         Number of states allowed in pause stash (default :
                         200)
-  --max_step MAX_STEP   Maximum number of steps allowed for a state (default
-                        : 50 000)
+  --max_step MAX_STEP   Maximum number of steps allowed for a state (default :
+                        50 000)
   --max_deadend MAX_DEADEND
                         Number of deadended state required to stop (default :
                         600)
@@ -320,10 +317,9 @@ SCDG creation parameter:
                         (default : 3)
   --disjoint_union      Do we merge traces or use disjoint union ? (default :
                         merge)
-  --not_comp_args       Do we compare arguments to add new nodes when
-                        building graph ? (default : comparison enabled)
-  --three_edges         Do we use the three-edges strategy ? (default :
-                        False)
+  --not_comp_args       Do we compare arguments to add new nodes when building
+                        graph ? (default : comparison enabled)
+  --three_edges         Do we use the three-edges strategy ? (default : False)
   --not_ignore_zero     Do we ignore zero when building graph ? (default :
                         Discard zero)
   --dir DIR             Directory to save outputs graph for gspan (default :
@@ -339,8 +335,8 @@ Thread parameter:
 
 Global parameter:
   --approximate         Symbolic approximation (default : False)
-  --timeout TIMEOUT     Timeout in seconds before ending extraction (default
-                        : 200)
+  --timeout TIMEOUT     Timeout in seconds before ending extraction (default :
+                        200)
   --not_resolv_string   Do we try to resolv references of string (default :
                         False)
   --exp_dir EXP_DIR     Directory to save SCDG extracted (default :
@@ -447,8 +443,8 @@ Gspan options:
 Deep Learning options:
   --epoch EPOCH         Only for deep learning model: number of epoch
                         (default: 5) Always 1 for FL model
-  --sepoch SEPOCH       Only for deep learning model: starting epoch
-                        (default: 1)
+  --sepoch SEPOCH       Only for deep learning model: starting epoch (default:
+                        1)
   --data_scale DATA_SCALE
                         Only for deep learning model: data scale value
                         (default: 0.9)
@@ -456,8 +452,8 @@ Deep Learning options:
                         Only for deep learning model: Size of the vector used
                         (default: 4)
   --batch_size BATCH_SIZE
-                        Only for deep learning model: Batch size for the
-                        model (default: 1)
+                        Only for deep learning model: Batch size for the model
+                        (default: 1)
 
 Malware familly:
   --bancteian
@@ -592,4 +588,5 @@ To create a new window inside of a running screen session Hit `Ctrl + A` and the
 To switch from one screen window to another Hit `Ctrl + A` and then `Ctrl + A` in immediate succession.
 
 To list open screen windows Hit `Ctrl + A` and then `W` in immediate succession
+
 
