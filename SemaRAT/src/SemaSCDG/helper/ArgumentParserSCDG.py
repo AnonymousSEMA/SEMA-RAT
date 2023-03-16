@@ -34,6 +34,12 @@ class ArgumentParserSCDG:
             action="store_true",
             
         )
+        self.group_expl.add_argument(
+            "--SCDFS",
+            help="Special Custom Depth First Search (prioritize new addresses)",
+            action="store_true",
+            
+        )
         
         self.group_output = self.parser.add_mutually_exclusive_group() # required=True
         self.group_output.title = 'Format to save graph output'
@@ -290,11 +296,8 @@ class ArgumentParserSCDG:
         expl_method = "DFS"   if args.DFS else \
                      ("BFS"   if args.BFS \
                 else ("CDFS"  if args.CDFS \
-                else ("DBFS"  if args.DBFS \
-                else ("SDFS"  if args.SDFS \
-                else ("SCDFS" if args.SCDFS \
-                else ("ThreadCDFS" if args.ThreadCDFS \
-                else  "CBFS"))))))
+                else ("CBFS"  if args.CBFS \
+                else  "SCDFS")))
 
         familly = "unknown"
         if args.familly:
