@@ -45,14 +45,10 @@ try:
     from .plugin.PluginThread import *
     from .plugin.PluginIoC import *
     from .explorer.SemaExplorerDFS import SemaExplorerDFS
-    from .explorer.SemaExplorerChooseDFS import SemaExplorerChooseDFS
     from .explorer.SemaExplorerCDFS import SemaExplorerCDFS
     from .explorer.SemaExplorerBFS import SemaExplorerBFS
     from .explorer.SemaExplorerCBFS import SemaExplorerCBFS
-    from .explorer.SemaExplorerSDFS import SemaExplorerSDFS
-    from .explorer.SemaExplorerDBFS import SemaExplorerDBFS
-    from .explorer.SemaThreadCDFS import SemaThreadCDFS
-    from .explorer.SemaExplorerAnotherCDFS import SemaExplorerAnotherCDFS
+    from .explorer.SemaExplorerSCDFS import SemaExplorerSCDFS
     from .clogging.CustomFormatter import CustomFormatter
     from .clogging.LogBookFormatter import *
     from .helper.ArgumentParserSCDG import ArgumentParserSCDG
@@ -70,14 +66,10 @@ except:
     from plugin.PluginCommands import *
     from plugin.PluginIoC import *
     from explorer.SemaExplorerDFS import SemaExplorerDFS
-    from explorer.SemaExplorerChooseDFS import SemaExplorerChooseDFS
     from explorer.SemaExplorerCDFS import SemaExplorerCDFS
     from explorer.SemaExplorerBFS import SemaExplorerBFS
     from explorer.SemaExplorerCBFS import SemaExplorerCBFS
-    from explorer.SemaExplorerSDFS import SemaExplorerSDFS
-    from explorer.SemaExplorerDBFS import SemaExplorerDBFS
-    from explorer.SemaExplorerAnotherCDFS import SemaExplorerAnotherCDFS
-    from explorer.SemaThreadCDFS import SemaThreadCDFS
+    from explorer.SemaExplorerSCDFS import SemaExplorerSCDFS
     from clogging.CustomFormatter import CustomFormatter
     from clogging.LogBookFormatter import * # TODO
     from helper.ArgumentParserSCDG import ArgumentParserSCDG
@@ -257,8 +249,13 @@ class SemaSCDG:
         except:
             os.makedirs(exp_dir)
             
+        try:
+            os.stat("src/output/runs/"+ str(self.current_exp_dir) + "/")
+        except:
+            os.makedirs("src/output/runs/"+ str(self.current_exp_dir) + "/")
+            
         self.log.info(args)
-
+        
         if exp_dir != "output/runs/"+ str(self.current_exp_dir) + "/":
             setup = open_file("src/output/runs/"+ str(self.current_exp_dir) + "/" + "setup.txt", "w")
             setup.write(str(self.jump_it) + "\n")
@@ -511,42 +508,6 @@ class SemaSCDG:
         #####################################################
         ##########         Exploration           ############
         #####################################################
-
-        #custom getprocaddress de warzone
-        @proj.hook(0xC047A4B2,length = 0xb6)
-        def nothinghere(state):
-            import csv
-            retaddr = state.stack_pop()
-            find = state.solver.eval(state.stack_pop())
-            state.stack_push(find)
-            state.stack_push(retaddr)
-            with open('rainbow.csv', newline='') as f:
-                reader = csv.reader(f)
-                for row in reader:
-                    if find == int(row[2].rstrip("h"),16):
-                        dll = row[0]
-                        lib = dll.split("\\")[-1]
-                        name = row[1]
-                        print("CustomGetProcAddress(" + lib + ", " + name + ")")
-                        symb = state.project.loader.find_symbol(name)
-                        if symb:
-                            state.regs.eax = symb.rebased_addr
-                        else:
-                            from procedures.CustomSimProcedure import CustomSimProcedure
-                            call_sim = CustomSimProcedure([], [],False,False)
-                            extern = state.project.loader.extern_object
-                            addr = extern.get_pseudo_addr(name)
-                            if name in call_sim.custom_simproc_windows["custom_package"]:
-                                proj.hook_symbol(name,call_sim.custom_simproc_windows["custom_package"][name](cc=SimCCStdcall(proj.arch)),)
-                            elif name in call_sim.custom_simproc_windows:
-                                proj.hook_symbol(name,call_sim.custom_simproc_windows[name](cc=SimCCStdcall(proj.arch)),)
-                            elif lib in SIM_LIBRARIES:
-                                proj.hook_symbol(name, SIM_LIBRARIES[lib].get(name, state.arch))
-                            else:
-                                print("ERROR IN CUSTOMGETPROCADDRESS")
-                            state.regs.eax = addr
-                        return
-            
             
         def nothing(state):
             if False:
@@ -736,7 +697,7 @@ class SemaSCDG:
         logging.getLogger().removeHandler(fileHandler)
 
     def get_exploration_tech(self, args, exp_dir, nameFileShort, simgr):
-        exploration_tech = SemaExplorerDFS(
+        exploration_tech = SemaExplorerSCDFS(
             simgr, 0, exp_dir, nameFileShort, self
         )
         if self.expl_method == "CDFS":
@@ -749,6 +710,10 @@ class SemaSCDG:
             )
         elif self.expl_method == "BFS":
             exploration_tech = SemaExplorerBFS(
+                simgr, 0, exp_dir, nameFileShort, self
+            )
+        elif self.expl_method == "DFS":
+            exploration_tech = SemaExplorerDFS(
                 simgr, 0, exp_dir, nameFileShort, self
             )
             
