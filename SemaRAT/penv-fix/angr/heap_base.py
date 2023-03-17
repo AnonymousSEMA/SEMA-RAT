@@ -71,7 +71,7 @@ class SimHeapBase(SimStatePlugin):
                 size = self.state.libc.max_variable_size
         else:
             size = self.state.solver.eval(sim_size)
-            if size == 0: # TODO serena
+            if size == 0:
                 l.info("Allocation request of 0 bytes")
                 size = self.state.libc.max_variable_size 
         return size
