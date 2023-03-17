@@ -69,6 +69,9 @@ class SimHeapBase(SimStatePlugin):
                 l.info("Allocation request of %d bytes exceeded maximum of %d bytes; allocating %d bytes",
                           size, self.state.libc.max_variable_size, self.state.libc.max_variable_size)
                 size = self.state.libc.max_variable_size
+            if size == 0:
+                l.info("Allocation request of 0 bytes")
+                size = self.state.libc.max_variable_size 
         else:
             size = self.state.solver.eval(sim_size)
             if size == 0:
